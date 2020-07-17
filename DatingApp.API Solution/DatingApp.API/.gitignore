@@ -1,0 +1,11 @@
+﻿.vscode
+bin
+obj
+*.db
+*.mdf
+*.idf
+*.sln
+*DatingApp.API Solution.sln
+.vs
+DatingApp.API.csproj
+DatingApp.API.csproj.user
