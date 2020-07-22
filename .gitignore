@@ -6,3 +6,4 @@ v16
 *.config
 DatingApp.API Solution/DatingApp.API/DatingApp.API.csproj.user
 DatingApp.API Solution/DatingApp.API/DatingApp.API.csproj
+DatingApp.API Solution/DatingApp.API/appsettings.json

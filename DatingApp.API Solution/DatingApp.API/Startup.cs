@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DatingApp.API.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DatingApp.API
 {
@@ -35,6 +38,18 @@ namespace DatingApp.API
 
             services.AddCors();    /// alow browser to trusting this api.
             services.AddScoped<IAuthRepository, AuthRepository>();    // Register Repository in the StartUp class.
+
+            ///// Enable the Authentication.
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(option => {
+                    option.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSetting:Token").Value)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,11 +64,13 @@ namespace DatingApp.API
 
             app.UseRouting();
 
+            app.UseAuthentication();    /////// enable the Authentication.
             app.UseAuthorization();
-
+            
             // app.UseMvc();  /////////////// Just in case.
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -61,3 +78,4 @@ namespace DatingApp.API
         }
     }
 }
+
